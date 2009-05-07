@@ -1,0 +1,20 @@
+==
+Requirements
+==
+ruby-hmac
+json
+amqp
+extlib
+
+==
+To run
+==
+Start rabbitmq
+
+Start the master
+$ ruby -rubygems bin/master
+
+Start the agent
+$ ruby -rubygems bin/agent user secret
+
+You can enable debug with AMQP_DEBUG=true

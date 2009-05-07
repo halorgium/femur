@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require File.dirname(__FILE__) + '/../lib/femur'
+
+user_id = ARGV.shift || abort("No user id provided")
+secret = ARGV.shift || abort("No secret provided")
+Femur::Agent.run(user_id, secret)

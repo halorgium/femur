@@ -1,0 +1,53 @@
+Terms: 
+
+H = herault
+C(x) = client x
+I(x) = identity of client x
+S(x) = secret of client x
+
+token() = a token
+hash(key, clear) = hash of clear using key
+
+************************
+Connection
+************************
+C(a) connects
+
+C(a) advertises:
+C(a) -> H: {session=token(), hash((S(a), [session])}
+data: {adverts}
+
+herault verifies and if correct, returns:
+H -> C(a): {session, ack=token(), hash(S(a), [session, ack])}
+data: {}
+
+C(a) verifies (replies?)
+
+************************
+Discovery and dispatch
+************************
+client a discovers against herault
+C(a) -> H: {session=token(), hash(S(a), [session])}
+data: {op, resources}
+
+herault verifies and if correct, returns:
+H -> C(a): {session, ack=token(), hash(S(a), [session, ack])}
+data: {results}
+
+client a determines which identities to dispatch to. for each identity:
+C(a) -> C(x):
+data: {session2=token(), request=[I(a), I(x), op, resources], request_hash=hash(S(a), [session2, request])}
+
+client x asks herault to confirm the request and for a signed confirmation
+C(x) -> H: {session=token(), hash(S(x), [session])}
+data: {request, request_hash}
+
+herault verifies and confirms the request is from client a and determines authorization
+H -> C(x): {session, ack=token(), hash(S(x), [session, ack])}
+{session2, ack2=token(), response, confirmation_hash=hash(S(a), [session2, ack2, request])}
+
+client x responds to client a with the confirmation
+C(x) -> C(a):
+{session3=token(), session2, ack2, response, confirmation_hash}
+
+client a verifies and confirms the request is from herault, starts op
